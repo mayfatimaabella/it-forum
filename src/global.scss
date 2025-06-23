@@ -26,6 +26,189 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 /**
+ * USJ-R IT Forum Custom Styles
+ * -----------------------------------------------------
+ */
+
+/* Global variables for consistent theming */
+:root {
+  --usjr-primary: #1e40af;
+  --usjr-secondary: #7c3aed;
+  --usjr-success: #059669;
+  --usjr-warning: #d97706;
+  --usjr-danger: #dc2626;
+  --usjr-light: #f8fafc;
+  --usjr-medium: #64748b;
+  --usjr-dark: #1e293b;
+  
+  /* Custom gradients */
+  --gradient-primary: linear-gradient(135deg, var(--usjr-primary) 0%, var(--usjr-secondary) 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  
+  /* Shadows */
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.2);
+  
+  /* Border radius */
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
+  --radius-xl: 16px;
+}
+
+/* Global typography improvements */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ion-color-dark);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: all 0.2s ease;
+}
+
+/* Custom button styles */
+ion-button {
+  --border-radius: var(--radius-medium);
+  font-weight: 500;
+  text-transform: none;
+}
+
+/* Card improvements */
+ion-card {
+  --border-radius: var(--radius-large);
+  box-shadow: var(--shadow-soft);
+  margin: 0 0 1rem 0;
+}
+
+/* Chip improvements */
+ion-chip {
+  --border-radius: var(--radius-medium);
+  font-weight: 500;
+}
+
+/* Badge improvements */
+ion-badge {
+  --border-radius: var(--radius-small);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Avatar improvements */
+ion-avatar {
+  --border-radius: 50%;
+  box-shadow: var(--shadow-soft);
+}
+
+/* List improvements */
+ion-list {
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+}
+
+ion-item {
+  --border-color: var(--ion-color-light);
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+/* FAB improvements */
+ion-fab-button {
+  --box-shadow: var(--shadow-medium);
+  --border-radius: 50%;
+}
+
+/* Toolbar improvements */
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: white;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+/* Dark mode improvements */
+body.dark {
+  --usjr-light: #1e293b;
+  --usjr-medium: #94a3b8;
+  --usjr-dark: #f8fafc;
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--ion-color-light);
+  }
+  
+  ion-card {
+    --background: var(--ion-color-dark);
+    --color: var(--ion-color-light);
+  }
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+  
+  /* Better spacing on larger screens */
+  ion-content {
+    --padding-start: 2rem;
+    --padding-end: 2rem;
+  }
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ion-color-light);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ion-color-medium);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ion-color-dark);
+}
+
+/**
  * Ionic Dark Mode
  * -----------------------------------------------------
  * For more info, please see:

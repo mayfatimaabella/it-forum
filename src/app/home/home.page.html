@@ -1,20 +1,238 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      USJ-R IT FORUM
-    </ion-title>
+    <ion-title>USJ-R IT Forum</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleDarkMode()">
+        <ion-icon [name]="isDarkMode ? 'sunny' : 'moon'"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear">
+        <ion-icon name="notifications"></ion-icon>
+        <ion-badge color="danger" *ngIf="unreadNotifications > 0">{{unreadNotifications}}</ion-badge>
+      </ion-button>
+      <ion-button (click)="openProfile()">
+        <ion-avatar>
+          <img [src]="userProfile.avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" alt="Profile">
+        </ion-avatar>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Welcome to USJ-R IT Forum</h1>
+      <p>Connect, Learn, and Grow with your fellow IT students</p>
+      <div class="user-info">
+        <ion-chip color="primary">
+          <ion-icon name="person"></ion-icon>
+          <ion-label>{{userProfile.name}} - {{userProfile.year}} Year</ion-label>
+        </ion-chip>
+        <ion-chip [color]="userProfile.role === 'Faculty' ? 'success' : userProfile.role === 'Senior' ? 'warning' : 'medium'">
+          <ion-icon [name]="getRoleIcon(userProfile.role)"></ion-icon>
+          <ion-label>{{userProfile.role}}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
   </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <ion-icon name="help-circle" color="primary"></ion-icon>
+      <h3>{{stats.totalQuestions}}</h3>
+      <p>Questions</p>
+    </div>
+    <div class="stat-card">
+      <ion-icon name="people" color="secondary"></ion-icon>
+      <h3>{{stats.activeMembers}}</h3>
+      <p>Active Members</p>
+    </div>
+    <div class="stat-card">
+      <ion-icon name="document-text" color="tertiary"></ion-icon>
+      <h3>{{stats.resources}}</h3>
+      <p>Resources</p>
+    </div>
+    <div class="stat-card">
+      <ion-icon name="megaphone" color="warning"></ion-icon>
+      <h3>{{stats.announcements}}</h3>
+      <p>Announcements</p>
+    </div>
+  </div>
+
+  <!-- Main Features Grid -->
+  <div class="features-section">
+    <h2>Quick Access</h2>
+    
+    <!-- Q&A Forum Section -->
+    <ion-card button="true" (click)="navigateToForum()">
+      <ion-card-header>
+        <div class="feature-header">
+          <ion-icon name="chatbubbles" color="primary"></ion-icon>
+          <div>
+            <ion-card-title>Q&A Forum</ion-card-title>
+            <ion-card-subtitle>Get help with programming and data structures</ion-card-subtitle>
+          </div>
+          <ion-badge color="primary">{{recentQuestions.length}} New</ion-badge>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="recent-questions" *ngIf="recentQuestions.length > 0">
+          <div class="question-item" *ngFor="let question of recentQuestions.slice(0, 3)">
+            <h4>{{question.title}}</h4>
+            <div class="question-meta">
+              <ion-chip size="small" [color]="getSubjectColor(question.subject)">
+                {{question.subject}}
+              </ion-chip>
+              <span class="time">{{question.timeAgo}}</span>
+            </div>
+          </div>
+        </div>
+        <ion-button expand="full" fill="clear" color="primary">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Ask Question
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Study Resources Section -->
+    <ion-card button="true" (click)="navigateToResources()">
+      <ion-card-header>
+        <div class="feature-header">
+          <ion-icon name="library" color="secondary"></ion-icon>
+          <div>
+            <ion-card-title>Study Resources</ion-card-title>
+            <ion-card-subtitle>Notes, code snippets, and exam materials</ion-card-subtitle>
+          </div>
+          <ion-badge color="secondary">{{recentResources.length}} New</ion-badge>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="resource-types">
+          <ion-button fill="outline" size="small">
+            <ion-icon name="document-text" slot="start"></ion-icon>
+            Notes
+          </ion-button>
+          <ion-button fill="outline" size="small">
+            <ion-icon name="code-slash" slot="start"></ion-icon>
+            Code
+          </ion-button>
+          <ion-button fill="outline" size="small">
+            <ion-icon name="school" slot="start"></ion-icon>
+            Exams
+          </ion-button>
+        </div>
+        <ion-button expand="full" fill="clear" color="secondary">
+          <ion-icon name="cloud-upload" slot="start"></ion-icon>
+          Share Resource
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Announcements Section -->
+    <ion-card button="true" (click)="navigateToAnnouncements()">
+      <ion-card-header>
+        <div class="feature-header">
+          <ion-icon name="megaphone" color="warning"></ion-icon>
+          <div>
+            <ion-card-title>Announcements</ion-card-title>
+            <ion-card-subtitle>Class and academic updates</ion-card-subtitle>
+          </div>
+          <ion-badge color="danger" *ngIf="unreadAnnouncements > 0">{{unreadAnnouncements}} Unread</ion-badge>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="recent-announcements" *ngIf="recentAnnouncements.length > 0">
+          <div class="announcement-item" *ngFor="let announcement of recentAnnouncements.slice(0, 2)">
+            <div class="announcement-header">
+              <h4>{{announcement.title}}</h4>
+              <ion-chip size="small" [color]="announcement.priority === 'high' ? 'danger' : announcement.priority === 'medium' ? 'warning' : 'medium'">
+                {{announcement.priority}}
+              </ion-chip>
+            </div>
+            <p>{{announcement.excerpt}}</p>
+            <small>{{announcement.timeAgo}} - {{announcement.author}}</small>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Mentorship Section -->
+    <ion-card button="true" (click)="navigateToMentorship()">
+      <ion-card-header>
+        <div class="feature-header">
+          <ion-icon name="people" color="success"></ion-icon>
+          <div>
+            <ion-card-title>Mentorship</ion-card-title>
+            <ion-card-subtitle>Connect with seniors for guidance</ion-card-subtitle>
+          </div>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="mentorship-stats">
+          <div class="mentor-stat">
+            <span class="number">{{mentorshipStats.availableMentors}}</span>
+            <span class="label">Available Mentors</span>
+          </div>
+          <div class="mentor-stat">
+            <span class="number">{{mentorshipStats.activeSessions}}</span>
+            <span class="label">Active Sessions</span>
+          </div>
+        </div>
+        <ion-button expand="full" fill="clear" color="success" *ngIf="userProfile.role === 'Junior'">
+          <ion-icon name="person-add" slot="start"></ion-icon>
+          Find Mentor
+        </ion-button>
+        <ion-button expand="full" fill="clear" color="success" *ngIf="userProfile.role === 'Senior'">
+          <ion-icon name="school" slot="start"></ion-icon>
+          Become Mentor
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Recent Activity Feed -->
+  <div class="activity-section">
+    <h2>Recent Activity</h2>
+    <ion-list>
+      <ion-item *ngFor="let activity of recentActivity">
+        <ion-avatar slot="start">
+          <img [src]="activity.user.avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" alt="User">
+        </ion-avatar>
+        <ion-label>
+          <h3>{{activity.user.name}}</h3>
+          <p>{{activity.action}}</p>
+          <div class="activity-meta">
+            <ion-chip size="small" [color]="getActivityColor(activity.type)">
+              <ion-icon [name]="getActivityIcon(activity.type)"></ion-icon>
+              <ion-label>{{activity.type}}</ion-label>
+            </ion-chip>
+            <span class="time">{{activity.timeAgo}}</span>
+          </div>
+        </ion-label>
+        <ion-button fill="clear" slot="end" *ngIf="activity.actionable">
+          <ion-icon name="arrow-forward"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Quick Actions FAB -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="createNewQuestion()" color="primary">
+        <ion-icon name="help-circle"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="shareResource()" color="secondary">
+        <ion-icon name="document"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="createAnnouncement()" color="warning" *ngIf="canCreateAnnouncements()">
+        <ion-icon name="megaphone"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
